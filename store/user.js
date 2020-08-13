@@ -1,4 +1,8 @@
 export const state = () => ({
+  user: {
+    id: '',
+    name: '',
+  }
 })
 
 export const mutations = {
