@@ -1,5 +1,6 @@
+  
 <template>
-  <v-card class="mx-auto mt-5 pa-5" width="500px" style="background-color: #2c69db">
+  <v-card class="mx-auto mt-5 pa-5" width="500px">
     <v-card-title>
       <h1 class="display-1">新規登録</h1>
     </v-card-title>
@@ -7,7 +8,6 @@
       <v-form>
         <v-text-field v-model="name" :counter="10" label="名前" data-vv-name="name" required></v-text-field>
         <v-text-field v-model="email" label="メールアドレス" data-vv-name="email" required></v-text-field>
-        <v-text-field v-model="screen_name" label="ユーザーID" data-vv-name="screen_name" required></v-text-field>
         <v-text-field
           v-model="password"
           label="パスワード"
@@ -26,7 +26,7 @@
           :append-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
           @click:append="show2 = !show2"
         ></v-text-field>
-        <v-btn class="mr-4 lighten-3 mx-auto" @click="signup">登録</v-btn>
+        <v-btn class="mr-4 light-green lighten-3 mx-auto" @click="signup">登録</v-btn>
         <p v-if="error" class="errors">{{error}}</p>
       </v-form>
     </v-card-text>
@@ -41,7 +41,6 @@ export default {
     return {
       email: '',
       name: '',
-      screen_name: '',
       password: '',
       passwordConfirm: '',
       show1: false,
@@ -54,6 +53,7 @@ export default {
       if (this.password !== this.passwordConfirm) {
         this.error = '※パスワードとパスワード確認が一致していません'
       }
+      this.$store.commit('setLoading', true)
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
@@ -61,12 +61,12 @@ export default {
           const user = {
             email: res.user.email,
             name: this.name,
-            screen_name: this.screen_name,
             uid: res.user.uid
           }
           axios.post('/v1/users', { user }).then((responce) => {
+            this.$store.commit('setLoading', false)
+            this.$store.commit('setUser', responce.data)
             this.$router.push('/')
-            console.log(responce)
           })
         })
         .catch((error) => {
