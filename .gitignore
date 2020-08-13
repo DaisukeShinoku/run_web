@@ -88,3 +88,6 @@ sw.*
 
 # Vim swap files
 *.swp
+
+# Firebaseとの連携に必要なため作成
+.env
